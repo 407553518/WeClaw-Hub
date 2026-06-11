@@ -45,12 +45,12 @@ export function invitePage(props: InvitePageProps): Response {
               <button class="primary" type="submit">生成邀请链接</button>
             </div>
           </form>
-          <div id="invite-result" class="card hidden" style="margin-top: 12px">
+          <div id="invite-result" class="card mt-3 hidden">
             <strong>邀请已生成</strong>
-            <p class="meta" style="margin: 8px 0">链接：<a id="invite-link" href="#" target="_blank" style="word-break:break-all"></a></p>
-            <div id="invite-qr" style="margin-top:12px"></div>
-            <button class="button" type="button" id="copy-invite-link" style="margin-top:8px">复制链接</button>
-            <button class="button" type="button" id="close-invite-result" style="margin-top:8px">关闭</button>
+            <p class="meta mt-2">链接：<a id="invite-link" href="#" target="_blank" class="break-all"></a></p>
+            <div id="invite-qr" class="mt-3"></div>
+            <button class="button mt-2" type="button" id="copy-invite-link">复制链接</button>
+            <button class="button mt-2" type="button" id="close-invite-result">关闭</button>
           </div>
         </Section>
 
@@ -62,8 +62,8 @@ export function invitePage(props: InvitePageProps): Response {
         >
           <div class="grid">
             {props.invites.length ? props.invites.map((inv) => (
-              <div class="row" style="flex-direction:column;align-items:stretch">
-                <div style="display:flex;justify-content:space-between;align-items:center">
+              <div class="row flex-col items-stretch">
+                <div class="flex items-center justify-between">
                   <div>
                     <strong>{inv.remark || "(无备注)"}</strong>
                     <div class="meta">
@@ -71,7 +71,7 @@ export function invitePage(props: InvitePageProps): Response {
                         color={inviteStatusColor(inv)}
                         text={inviteStatusText(inv)}
                       />
-                      <span class="code-inline" style="user-select:all">{inv.code}</span>
+                      <span class="code-inline select-all">{inv.code}</span>
                       <span>{inv.scan_count}/{inv.max_scans} 次</span>
                     </div>
                   </div>
@@ -88,7 +88,7 @@ export function invitePage(props: InvitePageProps): Response {
                     <button class="button" type="button" data-delete-invite={inv.code}>删除</button>
                   </div>
                 </div>
-                <div id={`usage-${inv.code}`} class="hidden" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+                <div id={`usage-${inv.code}`} class="hidden mt-3 pt-3 border-t">
                   <div id={`usage-list-${inv.code}`} class="usage-loading">加载中...</div>
                 </div>
               </div>
@@ -186,7 +186,7 @@ function showInviteResult(data) {
     .then(function(r) { return r.json(); })
     .then(function(qr) {
       if (qr.qrcode_svg) {
-        qrDiv.innerHTML = '<div style="max-width:200px;margin:0 auto">' + qr.qrcode_svg + '</div>';
+        qrDiv.innerHTML = '<div class="mx-auto qr-max-width">' + qr.qrcode_svg + '</div>';
       }
     })
     .catch(function() {});
@@ -218,7 +218,7 @@ document.querySelectorAll("[data-toggle-usage]").forEach(function(btn) {
         if (records.length === 0) {
           listDiv.innerHTML = '<p class="meta">暂无扫码记录。</p>';
         } else {
-          listDiv.innerHTML = '<table style="width:100%;font-size:13px"><thead><tr><th style="text-align:left">时间</th><th style="text-align:left">绑定 Bot</th><th style="text-align:left">用户 ID</th><th>结果</th></tr></thead><tbody>' +
+          listDiv.innerHTML = '<table class="table"><thead><tr><th>时间</th><th>绑定 Bot</th><th>用户 ID</th><th>结果</th></tr></thead><tbody>' +
             records.map(function(r) {
               var time = escapeHtml(new Date(r.used_at).toLocaleString("zh-CN"));
               var ok = r.success ? "✅ 成功" : "❌ 失败";

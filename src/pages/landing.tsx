@@ -2,21 +2,22 @@
 
 import { renderToString } from "hono/jsx/dom/server";
 
-export function landingPage(): Response {
-  const body = renderToString(<Landing />);
+export function landingPage(deployServiceUrl?: string): Response {
+  const body = renderToString(<Landing deployServiceUrl={deployServiceUrl} />);
   return new Response(`<!DOCTYPE html>${body}`, {
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
 }
 
-function Landing() {
+function Landing({ deployServiceUrl }: { deployServiceUrl?: string }) {
+  const deployUrl = deployServiceUrl || "https://deploy.weclaw-hub.dev";
   return (
     <html lang="zh-CN">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>WeClaw Hub — 微信消息中樞</title>
-        <meta name="description" content="零服务器成本，部署在 Cloudflare Workers 上。聚合通知、AI 对话、多账号管理，一站式微信消息网关。" />
+        <title>WeClaw Hub - 微信消息中樞</title>
+        <meta name="description" content="三种方式部署：Cloudflare Workers 零成本、Docker 自托管、Bun 直接运行。聚合通知、AI 对话、多账号管理，一站式微信消息网关。" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@500;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -27,19 +28,21 @@ function Landing() {
           <nav class="topnav">
             <a href="/guide">使用说明</a>
             <a href="/admin">管理台</a>
-            <a href="/login">绑定账号</a>
+            <a href="/bind">绑定账号</a>
           </nav>
           <div class="hero-content">
             <p class="hero-eyebrow fade-up">WeClaw Hub</p>
-            <h1 class="hero-title fade-up" style="animation-delay:0.1s">
+            <h1 class="hero-title fade-up delay-1">
               你的微信，<br />
               <span class="hero-accent">AI 了</span>
             </h1>
-            <p class="hero-text fade-up" style="animation-delay:0.2s">
-              零服务器成本，部署在 Cloudflare Workers 上。聚合通知、AI 对话、多账号管理，一站式微信消息网关。
+            <p class="hero-text fade-up delay-2">
+              三种方式部署：Cloudflare 零成本、Docker 自托管、Bun 直接运行。<br />
+              聚合 SaaS 通知、AI 对话、多账号管理，一站式微信消息网关。
             </p>
-            <div class="hero-cta fade-up" style="animation-delay:0.3s">
-              <a href="/guide" class="cta-primary">开始使用</a>
+            <div class="hero-cta fade-up delay-3">
+              <a href={deployUrl} class="cta-deploy">🚀 一键部署</a>
+              <a href="/guide" class="cta-secondary">使用说明</a>
               <a href="/admin" class="cta-secondary">管理台 →</a>
             </div>
           </div>
@@ -52,55 +55,86 @@ function Landing() {
         <main>
           <section class="features">
             <div class="features-inner">
-              <div class="feature fade-up" style="animation-delay:0.1s">
+              <div class="feature fade-up delay-1">
                 <span class="feature-num">01</span>
                 <h3 class="feature-title">通知聚合</h3>
                 <p class="feature-text">
                   GitHub、Stripe 等 SaaS 的 webhook 消息，直接推送到你的微信。支持 Bearer 令牌验证，安全可靠。
                 </p>
               </div>
-              <div class="feature fade-up" style="animation-delay:0.2s">
+              <div class="feature fade-up delay-2">
                 <span class="feature-num">02</span>
                 <h3 class="feature-title">AI 对话</h3>
                 <p class="feature-text">
-                  在微信里直接和 Claude、GPT 对话，24 小时在线。智能模型选择，自动匹配最佳模型。
+                  在微信里直接和 Claude、GPT 对话，24 小时在线。智能模型选择、多对话管理、历史压缩。
                 </p>
               </div>
-              <div class="feature fade-up" style="animation-delay:0.3s">
+              <div class="feature fade-up delay-3">
                 <span class="feature-num">03</span>
                 <h3 class="feature-title">消息网关</h3>
                 <p class="feature-text">
-                  多后端路由、本地 Bridge 接入、多账号统一管理。一个 Worker，管理所有微信消息。
+                  多后端路由、本地 Bridge 接入、多账号统一管理。Cloudflare / Docker / Bun 三种方式运行。
                 </p>
               </div>
             </div>
           </section>
           <section class="steps-section">
             <div class="steps-inner">
-              <h2 class="steps-title fade-up">快速开始</h2>
+              <h2 class="steps-title fade-up">三种方式部署</h2>
               <div class="steps">
-                <div class="step fade-up" style="animation-delay:0.1s">
-                  <span class="step-num">1</span>
+                <div class="step fade-up delay-1">
+                  <span class="step-num bg-brand">☁️</span>
                   <div>
-                    <h4>一键部署</h4>
-                    <p>点击按钮，部署到 Cloudflare Workers。无需服务器，无需运维。</p>
+                    <h4>Cloudflare Workers</h4>
+                    <p>零成本部署在 Cloudflare 边缘网络。OAuth 一键部署，自动创建 KV/DO/Secrets，无需命令行。</p>
+                    <a href={deployUrl} class="cta-deploy" style="display: inline-flex; margin-top: 12px; padding: 10px 24px; font-size: 0.875rem;">🚀 一键部署</a>
                   </div>
                 </div>
-                <div class="step fade-up" style="animation-delay:0.2s">
+                <div class="step fade-up delay-2">
+                  <span class="step-num bg-sky">🐳</span>
+                  <div>
+                    <h4>Docker 自托管</h4>
+                    <p>VPS / NAS / 本地服务器上运行，数据和日志持久化。GitHub Actions 自动构建。</p>
+                    <p class="text-sm text-muted mt-1"><code>docker compose up -d</code></p>
+                  </div>
+                </div>
+                <div class="step fade-up delay-3">
+                  <span class="step-num bg-terminal">🥟</span>
+                  <div>
+                    <h4>Bun 直接运行</h4>
+                    <p>开发调试、快速尝鲜。原生 SQLite，零外部依赖，一行命令启动。</p>
+                    <p class="text-sm text-muted mt-1"><code>bun run src/local/server.ts</code></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="steps-section bg-base border-t">
+            <div class="steps-inner">
+              <h2 class="steps-title fade-up">快速开始</h2>
+              <div class="steps">
+                <div class="step fade-up delay-1">
+                  <span class="step-num">1</span>
+                  <div>
+                    <h4>选择部署方式</h4>
+                    <p>Cloudflare Workers 零成本、Docker VPS 自托管、Bun 本地开发，三种方式任选。</p>
+                  </div>
+                </div>
+                <div class="step fade-up delay-2">
                   <span class="step-num">2</span>
                   <div>
                     <h4>扫码绑定</h4>
                     <p>在微信中扫码，绑定机器人账号。支持多账号管理。</p>
                   </div>
                 </div>
-                <div class="step fade-up" style="animation-delay:0.3s">
+                <div class="step fade-up delay-3">
                   <span class="step-num">3</span>
                   <div>
                     <h4>配置模型</h4>
-                    <p>在管理台添加 AI 供应商和模型，设置智能路由规则。</p>
+                    <p>在管理台添加 AI 供应商和模型，一键拉取模型列表并导入。</p>
                   </div>
                 </div>
-                <div class="step fade-up" style="animation-delay:0.4s">
+                <div class="step fade-up delay-4">
                   <span class="step-num">4</span>
                   <div>
                     <h4>开始使用</h4>
@@ -115,7 +149,7 @@ function Landing() {
           <div class="footer-inner">
             <div class="footer-brand">
               <strong>WeClaw Hub</strong>
-              <span class="footer-muted">Built with Cloudflare Workers</span>
+              <span class="footer-muted">Cloudflare · Docker · Bun</span>
             </div>
             <nav class="footer-links">
               <a href="/guide">使用说明</a>
@@ -132,13 +166,48 @@ function Landing() {
 const styles = `
 :root {
   --bg: #f4efe6;
-  --brand: #b6542d;
-  --brand-deep: #7f3014;
+  --bg-accent: #efe0cb;
+  --panel: rgba(255, 252, 247, 0.82);
+  --panel-strong: #fffaf2;
+  --surface: #fffaf2;
   --ink: #1f1a17;
   --ink-muted: #6f6258;
-  --surface: #fffaf2;
-  --line: rgba(74, 57, 44, 0.1);
-  --line-soft: rgba(74, 57, 44, 0.06);
+  --line: rgba(74, 57, 44, 0.12);
+  --line-soft: rgba(74, 57, 44, 0.07);
+  --brand: #b6542d;
+  --brand-deep: #7f3014;
+  --wechat: #07C160;
+  --cf: #F38020;
+  --amber: #d97706;
+  --terminal: #10b981;
+  --ok: #2f6a48;
+  --warn-color: #8a5a14;
+  --red: #dc2626;
+  --sky: #0ea5e9;
+  --purple: #7c3aed;
+  --shadow: 0 16px 40px rgba(61, 39, 22, 0.08);
+
+  /* Spacing scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Typography scale */
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-body: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 20px;
+  --text-2xl: clamp(28px, 4vw, 44px);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -238,7 +307,7 @@ a { color: inherit; }
   line-height: 1.7;
   color: var(--ink-muted);
   margin: 0 0 40px;
-  max-width: 560px;
+  max-width: 620px;
 }
 
 .hero-cta {
@@ -264,6 +333,25 @@ a { color: inherit; }
 .cta-primary:hover {
   background: var(--brand-deep);
   transform: translateY(-1px);
+}
+
+.cta-deploy {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--cf) 0%, #e06b1a 100%);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 999px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(243, 128, 32, 0.35);
+}
+
+.cta-deploy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(243, 128, 32, 0.45);
 }
 
 .cta-secondary {
